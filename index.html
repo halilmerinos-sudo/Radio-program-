@@ -174,13 +174,13 @@
             font-weight: 600;
         }
 
-        /* SAĞ PANEL - TABLET EKRANINA TAM SIĞACAK ŞEKİLDE DÜZENLENDİ */
+        /* SAĞ PANEL - TABLET EKRANINA TAM SIĞACAK DÜZEN */
         .player-view {
             width: 62%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between; /* İçerikleri dikeyde dengeli dağıtır */
+            justify-content: space-between;
             padding: 24px 20px;
             position: relative;
             height: 100%;
@@ -193,11 +193,10 @@
             width: 100%;
         }
 
-        /* Daire Boyutu Galaxy Tab İçin Optimize Edildi */
         .visualizer-container {
             position: relative;
-            width: 190px;
-            height: 190px;
+            width: 180px;
+            height: 180px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -222,8 +221,8 @@
         }
 
         .player-logo {
-            width: 150px;
-            height: 150px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             background: #141419;
             border: 2px solid #222;
@@ -258,7 +257,6 @@
             text-shadow: 0 0 8px var(--neon-glow);
         }
 
-        /* Dalga Alanı Küçültüldü */
         .wave-container {
             display: flex;
             align-items: center;
@@ -284,7 +282,6 @@
             width: 100%;
         }
 
-        /* Play Butonu Yukarı Kaydırıldı */
         .play-btn {
             width: 68px;
             height: 68px;
@@ -385,29 +382,27 @@
     </div>
 
     <script>
-        // Kesinlikle çalışan HTTPS tabanlı popüler radyo link havuzu
+        // Tarayıcı güvenliğine uygun, HTTPS altyapılı gerçek popüler radyo havuzu
         const stations = [
-            // ARABESK
+            // ARABESK & HALK
             { id: 1, name: "Kral FM", freq: "105.4", type: "national", genre: "Arabesk", url: "https://radyo.kralfm.com.tr/stream/1/", short: "KRAL" },
-            { id: 2, name: "Baba Radyo", freq: "105.6", type: "national", genre: "Arabesk", url: "https://babaradyo.turkuvazradyolar.com/turkuvaz", short: "BABA" },
-            { id: 3, name: "Damar FM", freq: "Web", type: "national", genre: "Arabesk", url: "https://radyo.damarfm.com/stream", short: "DMR" },
-            { id: 4, name: "Efkarlı FM", freq: "Web", type: "local", genre: "Arabesk", url: "https://radyo.efkarli.com/stream", short: "EFKR" },
+            { id: 2, name: "Kral Akustik", freq: "Web", type: "national", genre: "Arabesk", url: "https://radyo.kralakustik.com.tr/stream/1/", short: "AKST" },
+            { id: 3, name: "TRT Türkü", freq: "97.0", type: "local", genre: "Arabesk", url: "https://file.trtvod.com/stream/radyo/trtturku.ts", short: "TRTT" },
             
             // POP
-            { id: 5, name: "Kral Pop", freq: "94.7", type: "national", genre: "Pop", url: "https://radyo.kralpop.com.tr/stream/1/", short: "KPOP" },
-            { id: 6, name: "Süper FM", freq: "90.8", type: "national", genre: "Pop", url: "https://superfm.listenpowerapp.com/superfm/mpeg.stream", short: "SPER" },
-            { id: 7, name: "Alem FM", freq: "89.2", type: "national", genre: "Pop", url: "https://turkmedya.radyotvonline.net/alemfmaac", short: "ALEM" },
-            { id: 8, name: "SlowTürk", freq: "95.3", type: "national", genre: "Pop", url: "https://radyo.slowturk.com.tr/stream/1/", short: "SLOW" },
-            { id: 9, name: "Joy Türk", freq: "89.0", type: "national", genre: "Pop", url: "https://joyturk.listenpowerapp.com/joyturk/mpeg.stream", short: "JOY" },
+            { id: 4, name: "Kral Pop", freq: "94.7", type: "national", genre: "Pop", url: "https://radyo.kralpop.com.tr/stream/1/", short: "KPOP" },
+            { id: 5, name: "Kral Rap", freq: "Web", type: "national", genre: "Pop", url: "https://radyo.kralrap.com.tr/stream/1/", short: "RAP" },
+            { id: 6, name: "Kral 90'lar Pop", freq: "Web", type: "national", genre: "Pop", url: "https://radyo.kral90lar.com.tr/stream/1/", short: "90LAR" },
 
-            // NOSTALJİ
-            { id: 10, name: "Radyo 45'lik", freq: "97.4", type: "local", genre: "Nostalji", url: "https://radyo45lik.turkuvazradyolar.com/turkuvaz", short: "45LK" },
-            { id: 11, name: "Pal Nostalji", freq: "99.2", type: "national", genre: "Nostalji", url: "https://shoutcast.radyogrup.com/stream/8/", short: "PALN" },
+            // NOSTALJİ & KLASİK
+            { id: 7, name: "TRT FM", freq: "91.4", type: "national", genre: "Nostalji", url: "https://file.trtvod.com/stream/radyo/trtfm.ts", short: "TRTF" },
+            { id: 8, name: "TRT Radyo 1", freq: "95.6", type: "national", genre: "Nostalji", url: "https://file.trtvod.com/stream/radyo/trtradyo1.ts", short: "TRT1" },
+            { id: 9, name: "TRT Nağme", freq: "101.6", type: "local", genre: "Nostalji", url: "https://file.trtvod.com/stream/radyo/trtname.ts", short: "NĞME" },
             
-            // YABANCI
-            { id: 12, name: "Metro FM", freq: "97.2", type: "national", genre: "Yabancı", url: "https://metrofm.listenpowerapp.com/metrofm/mpeg.stream", short: "MTR" },
-            { id: 13, name: "Power FM", freq: "100.0", type: "national", genre: "Yabancı", url: "https://powerfm.listenpowerapp.com/powerfm/mpeg.stream", short: "POWR" },
-            { id: 14, name: "Number One FM", freq: "102.4", type: "national", genre: "Yabancı", url: "https://n101stream.radyotvonline.net/stream/1/", short: "NR1" }
+            // YABANCI & CAZ & KLASİK
+            { id: 10, name: "TRT Radyo 3 (Caz/Batı)", freq: "94.5", type: "national", genre: "Yabancı", url: "https://file.trtvod.com/stream/radyo/trtradyo3.ts", short: "TRT3" },
+            { id: 11, name: "Kral World", freq: "Web", type: "national", genre: "Yabancı", url: "https://radyo.kralworld.com.tr/stream/1/", short: "WRLD" },
+            { id: 12, name: "TRT Uluslararası", freq: "Web", type: "local", genre: "Yabancı", url: "https://file.trtvod.com/stream/radyo/trtvotworld.ts", short: "VOT" }
         ];
 
         let currentStation = null;
