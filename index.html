@@ -2,23 +2,23 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Modern Android Tablet Radyosu</title>
     <style>
         :root {
             --bg-main: #0a0a0c;
             --bg-panel: #141419;
             --neon-color: #00ffcc;
-            --neon-glow: rgba(0, 255, 204, 0.3);
+            --neon-glow: rgba(0, 255, 204, 0.4);
             --text-main: #ffffff;
-            --text-muted: #70707a;
+            --text-muted: #7e7e8a;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -26,51 +26,65 @@
             background-color: var(--bg-main);
             color: var(--text-main);
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
             display: flex;
         }
 
-        /* Tablet İki Bölmeli Düzen (Split-Screen) */
+        /* Galaxy Tab 7 ve Tüm Tablet Ekranlarına Tam Oturan Esnek Düzen */
         .tablet-container {
             display: flex;
             width: 100%;
             height: 100%;
         }
 
-        /* SOL PANEL: İstasyon Listesi */
+        /* SOL PANEL: İstasyon Listesi ve Filtreler */
         .sidebar {
-            width: 38%;
+            width: 40%;
             background-color: var(--bg-panel);
             border-right: 1px solid #22222b;
             display: flex;
             flex-direction: column;
-            padding: 24px;
+            padding: 20px;
+            height: 100%;
         }
 
         .sidebar h2 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             letter-spacing: 0.5px;
         }
 
-        /* Filtre Butonları (Chips) */
+        /* Tür ve Kapsam Filtre Grupları */
+        .filter-section {
+            margin-bottom: 15px;
+        }
+        
+        .filter-title {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
         .filter-group {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .filter-chip {
             background: #22222b;
             border: none;
-            color: var(--text-muted);
-            padding: 8px 16px;
+            color: #b5b5be;
+            padding: 6px 14px;
             border-radius: 20px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
+            font-size: 13px;
+            transition: all 0.2s ease;
         }
 
         .filter-chip.active, .filter-chip:hover {
@@ -83,25 +97,26 @@
             flex: 1;
             overflow-y: auto;
             padding-right: 5px;
+            margin-top: 10px;
         }
 
-        /* İnce Scrollbar */
+        /* Akıcı Scrollbar */
         .station-list::-webkit-scrollbar {
-            width: 4px;
+            width: 5px;
         }
         .station-list::-webkit-scrollbar-thumb {
-            background: #333;
+            background: #2b2b36;
             border-radius: 4px;
         }
 
-        /* Liste Elemanları */
+        /* İstasyon Satırları */
         .station-item {
             display: flex;
             align-items: center;
-            padding: 14px;
+            padding: 12px 16px;
             background: #1a1a22;
-            border-radius: 14px;
-            margin-bottom: 12px;
+            border-radius: 12px;
+            margin-bottom: 10px;
             cursor: pointer;
             transition: all 0.2s ease;
             border: 1px solid transparent;
@@ -109,69 +124,81 @@
 
         .station-item:hover, .station-item.active {
             border-color: var(--neon-color);
-            background: rgba(0, 255, 204, 0.05);
+            background: rgba(0, 255, 204, 0.06);
         }
 
         .station-logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-            background: #333;
-            margin-right: 16px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #2b2b36;
+            margin-right: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 14px;
             color: var(--neon-color);
-            border: 1px solid #333;
+            border: 1px solid #3d3d4e;
+            flex-shrink: 0;
         }
 
         .station-info {
             flex: 1;
+            min-width: 0; /* Yazı taşmasını önler */
         }
 
         .station-name {
             font-weight: 600;
-            font-size: 16px;
+            font-size: 15px;
             margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .station-freq {
+        .station-genre {
             color: var(--text-muted);
-            font-size: 13px;
+            font-size: 12px;
+        }
+
+        .station-tags-box {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
         }
 
         .station-tag {
-            font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 6px;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
             background: #2b2b36;
             color: #bbb;
-            text-transform: uppercase;
             font-weight: 600;
         }
 
-        /* SAĞ PANEL: Modern Çalar (Player) */
+        /* SAĞ PANEL: Büyük Ekran Player Göstergesi */
         .player-view {
-            width: 62%;
+            width: 60%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px;
+            padding: 20px;
             position: relative;
+            height: 100%;
         }
 
-        /* Animasyonlu Neon Daire Göstergesi */
+        /* Dönen Neon Gösterge Dairesi */
         .visualizer-container {
             position: relative;
-            width: 260px;
-            height: 260px;
+            width: 240px;
+            height: 240px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .neon-ring {
@@ -179,11 +206,11 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
             border-top-color: var(--neon-color);
             border-bottom-color: var(--neon-color);
-            animation: spin 4s linear infinite;
-            box-shadow: 0 0 15px var(--neon-glow);
+            animation: spin 3s linear infinite;
+            box-shadow: 0 0 20px var(--neon-glow);
         }
 
         @keyframes spin {
@@ -192,78 +219,68 @@
         }
 
         .player-logo {
-            width: 210px;
-            height: 210px;
+            width: 190px;
+            height: 190px;
             border-radius: 50%;
-            background: #1a1a22;
-            border: 3px solid #222;
+            background: #141419;
+            border: 2px solid #222;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
+            font-size: 32px;
             font-weight: bold;
             color: var(--neon-color);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.9);
             z-index: 2;
-            transition: all 0.3s ease;
+            text-align: center;
+            padding: 10px;
         }
 
-        .playing .player-logo {
-            box-shadow: 0 0 30px var(--neon-glow);
-            border-color: var(--neon-color);
-        }
-
-        /* Çalan Bilgileri */
+        /* İstasyon Metin Bilgileri */
         .track-title {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             text-align: center;
         }
 
         .track-category {
             color: var(--text-muted);
-            font-size: 16px;
-            margin-bottom: 15px;
+            font-size: 15px;
+            margin-bottom: 10px;
         }
 
         .digital-freq {
-            font-size: 42px;
+            font-size: 38px;
             font-weight: 300;
             color: var(--neon-color);
             text-shadow: 0 0 10px var(--neon-glow);
-            margin-bottom: 30px;
-            letter-spacing: 1px;
+            margin-bottom: 20px;
         }
 
-        /* Animasyonlu Ses Dalgaları (Audio Visualizer) */
+        /* Animasyonlu Ses Dalgaları (Visualizer) */
         .wave-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            height: 50px;
-            margin-bottom: 40px;
+            gap: 5px;
+            height: 60px;
+            margin-bottom: 30px;
+            width: 100%;
         }
 
         .wave-bar {
-            width: 5px;
-            height: 8px;
-            background: linear-gradient(to top, #0066ff, var(--neon-color));
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(to top, #0055ff, var(--neon-color));
             border-radius: 10px;
-            transition: height 0.1s ease;
+            transition: height 0.08s ease;
         }
 
-        /* Butonlar */
-        .controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
+        /* Büyük Oynat Butonu */
         .play-btn {
-            width: 76px;
-            height: 76px;
+            width: 74px;
+            height: 74px;
             border-radius: 50%;
             background-color: var(--neon-color);
             border: none;
@@ -272,60 +289,81 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 20px var(--neon-glow);
-            transition: all 0.2s ease;
-        }
-
-        .play-btn:hidden {
-            display: none;
+            transition: transform 0.1s ease;
         }
 
         .play-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.92);
         }
 
         .play-btn svg {
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             fill: #0a0a0c;
+        }
+        
+        /* Hata / Yükleniyor Durum Bildirimi */
+        .status-msg {
+            font-size: 13px;
+            color: #ff4a4a;
+            margin-top: 10px;
+            height: 18px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Gizli HTML5 Audio Etiketi -->
-    <audio id="radio-player"></audio>
+    <!-- HTML5 Audio Elementi -->
+    <audio id="radio-player" preload="none" crossorigin="anonymous"></audio>
 
     <div class="tablet-container">
         
-        <!-- SOL PANEL: Kanal Yönetimi -->
+        <!-- SOL TARAFTAKİ YÖNETİM PANELİ -->
         <div class="sidebar">
-            <h2>Radyo İstasyonları</h2>
+            <h2>Radyo Merkezi</h2>
             
-            <div class="filter-group">
-                <button class="filter-chip active" onclick="filterStations('all')">Tümü</button>
-                <button class="filter-chip" onclick="filterStations('national')">Ulusal</button>
-                <button class="filter-chip" onclick="filterStations('local')">Yerel</button>
+            <!-- Konum Filtresi -->
+            <div class="filter-section">
+                <div class="filter-title">Yayın Türü</div>
+                <div class="filter-group" id="geoFilters">
+                    <button class="filter-chip active" onclick="filterType('geo', 'all')">Tümü</button>
+                    <button class="filter-chip" onclick="filterType('geo', 'national')">Ulusal</button>
+                    <button class="filter-chip" onclick="filterType('geo', 'local')">Yerel</button>
+                    <button class="filter-chip" onclick="filterType('geo', 'web')">İnternet</button>
+                </div>
             </div>
 
-            <div class="station-list" id="stationList">
-                <!-- JavaScript kanalları buraya dolduracak -->
+            <!-- Tarz / Filtre Grubu -->
+            <div class="filter-section">
+                <div class="filter-title">Müzik Tarzı</div>
+                <div class="filter-group" id="genreFilters">
+                    <button class="filter-chip active" onclick="filterType('genre', 'all')">Tüm Tarzlar</button>
+                    <button class="filter-chip" onclick="filterType('genre', 'Arabesk')">Arabesk</button>
+                    <button class="filter-chip" onclick="filterType('genre', 'Pop')">Pop</button>
+                    <button class="filter-chip" onclick="filterType('genre', 'Nostalji')">Nostalji</button>
+                    <button class="filter-chip" onclick="filterType('genre', 'Haber')">Haber</button>
+                    <button class="filter-chip" onclick="filterType('genre', 'Yabancı')">Yabancı</button>
+                </div>
             </div>
+
+            <!-- İstasyon Listesi -->
+            <div class="station-list" id="stationList"></div>
         </div>
 
-        <!-- SAĞ PANEL: Modern İstasyon Ekranı -->
+        <!-- SAĞ TARAFTAKİ MODERN GÖSTERGE VE EKRAN -->
         <div class="player-view" id="playerView">
             <div class="visualizer-container">
                 <div class="neon-ring" id="neonRing"></div>
                 <div class="player-logo" id="playerLogo">📻</div>
             </div>
 
-            <div class="track-title" id="playerTitle">Bir Kanal Seçin</div>
-            <div class="track-category" id="playerCategory">Radyo Dinlemeye Başlayın</div>
+            <div class="track-title" id="playerTitle">Kanal Seçin</div>
+            <div class="track-category" id="playerCategory">Müzik Tarzı</div>
             <div class="digital-freq" id="playerFreq">00.0 MHz</div>
 
-            <!-- Ritmik Ses Dalgaları -->
+            <!-- Dinamik Ekolayzer Dalgaları -->
             <div class="wave-container" id="waveContainer">
-                <!-- 12 Adet animasyon çubuğu -->
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
                 <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
                 <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
                 <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
@@ -334,161 +372,196 @@
 
             <div class="controls">
                 <button class="play-btn" id="playBtn" onclick="togglePlay()">
-                    <!-- Play İkonu -->
                     <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    <!-- Pause İkonu (Gizli) -->
                     <svg id="pauseIcon" style="display:none;" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                 </button>
             </div>
+            
+            <div class="status-msg" id="statusMsg"></div>
         </div>
 
     </div>
 
     <script>
-        // Örnek Canlı Radyo İstasyonları Verisi
-        // Not: Stream URL'lerinin 'https' olmasına ve tarayıcıda çalınabilir formatta (mp3/aac) olmasına dikkat edilmelidir.
+        // Tarayıcı ve Android Webview uyumlu, tamamen güncel popüler radyo listesi
         const stations = [
-            { id: 1, name: "Kral Pop", freq: "94.7", type: "national", cat: "Pop", url: "https://kralpopwms.radyotvonline.net/kralpop", short: "KP" },
-            { id: 2, name: "Metro FM", freq: "97.2", type: "national", cat: "Yabancı Pop", url: "https://radyo.turkuvazradyolar.com/turkuvaz", short: "M" },
-            { id: 3, name: "Power FM", freq: "100.0", type: "national", cat: "Elektronik / Pop", url: "https://powerfm.listenpowerapp.com/powerfm/mpeg.stream", short: "P" },
-            { id: 4, name: "İstanbul FM", freq: "88.6", type: "local", cat: "Karışık", url: "http://46.20.7.125/listen.pls", short: "İF" },
-            { id: 5, name: "Radyo Eksen", freq: "96.2", type: "local", cat: "Rock / Alternatif", url: "https://eksen.stream/url", short: "RE" },
-            { id: 6, name: "Süper FM", freq: "90.8", type: "national", cat: "Türkçe Pop", url: "https://superfm.listenpowerapp.com/superfm/mpeg.stream", short: "SF" }
+            // ARABESK
+            { id: 1, name: "Kral FM", freq: "105.4", type: "national", genre: "Arabesk", url: "https://radyo.kralfm.com.tr/stream/1/", short: "KRAL" },
+            { id: 2, name: "Baba Radyo", freq: "105.6", type: "national", genre: "Arabesk", url: "https://babaradyo.turkuvazradyolar.com/turkuvaz", short: "BABA" },
+            { id: 3, name: "Efkarlı FM", freq: "Web", type: "web", genre: "Arabesk", url: "https://radyo.efkarli.com/stream", short: "EFKR" },
+            
+            // POP
+            { id: 4, name: "Kral Pop", freq: "94.7", type: "national", genre: "Pop", url: "https://radyo.kralpop.com.tr/stream/1/", short: "KPOP" },
+            { id: 5, name: "Alem FM", freq: "89.2", type: "national", genre: "Pop", url: "https://turkmedya.radyotvonline.net/alemfmaac", short: "ALEM" },
+            { id: 6, name: "SlowTürk", freq: "95.3", type: "national", genre: "Pop", url: "https://radyo.slowturk.com.tr/stream/1/", short: "SLOW" },
+            { id: 7, name: "Süper FM", freq: "90.8", type: "national", genre: "Pop", url: "https://superfm.listenpowerapp.com/superfm/mpeg.stream", short: "SPER" },
+
+            // NOSTALJİ
+            { id: 8, name: "Radyo 45'lik", freq: "97.4", type: "local", genre: "Nostalji", url: "https://radyo45lik.turkuvazradyolar.com/turkuvaz", short: "45LK" },
+            { id: 9, name: "Pal Nostalji", freq: "99.2", type: "national", genre: "Nostalji", url: "https://shoutcast.radyogrup.com/stream/8/", short: "PALN" },
+            
+            // YABANCI
+            { id: 10, name: "Metro FM", freq: "97.2", type: "national", genre: "Yabancı", url: "https://metrofm.listenpowerapp.com/metrofm/mpeg.stream", short: "MTR" },
+            { id: 11, name: "Power FM", freq: "100.0", type: "national", genre: "Yabancı", url: "https://powerfm.listenpowerapp.com/powerfm/mpeg.stream", short: "POWR" },
+            
+            // HABER & YEREL & DİĞER
+            { id: 12, name: "TRT Radyo 1", freq: "95.6", type: "national", genre: "Haber", url: "https://file.trtvod.com/stream/radyo/trtradyo1.ts", short: "TRT1" },
+            { id: 13, name: "NTV Radyo", freq: "102.8", type: "local", genre: "Haber", url: "https://radyo.ntvradyo.com.tr/stream/1/", short: "NTV" },
+            { id: 14, name: "İstanbul FM", freq: "88.6", type: "local", genre: "Pop", url: "https://istanbulfm.radyotvonline.net/istanbulfm", short: "İST" }
         ];
 
         let currentStation = null;
         let isPlaying = false;
         let waveInterval = null;
+        
+        // Aktif Filtre Durumları
+        let activeGeo = 'all';
+        let activeGenre = 'all';
 
         const audioPlayer = document.getElementById('radio-player');
         const playIcon = document.getElementById('playIcon');
         const pauseIcon = document.getElementById('pauseIcon');
-        const playerView = document.getElementById('playerView');
         const neonRing = document.getElementById('neonRing');
+        const statusMsg = document.getElementById('statusMsg');
 
-        // Sayfa Açıldığında Kanalları Listele
         window.onload = () => {
-            renderList(stations);
-            // Neon halka animasyonunu başlangıçta durdur
+            renderList();
             neonRing.style.animationPlayState = 'paused';
         };
 
-        function renderList(list) {
+        // Hem Kapsama Hem Tarza Göre Gelişmiş Filtreleme Arayüzü
+        function filterType(filterCategory, value) {
+            if (filterCategory === 'geo') {
+                activeGeo = value;
+                updateChipActiveState('geoFilters', value);
+            } else if (filterCategory === 'genre') {
+                activeGenre = value;
+                updateChipActiveState('genreFilters', value);
+            }
+            renderList();
+        }
+
+        function updateChipActiveState(groupId, value) {
+            const buttons = document.querySelectorAll(`#${groupId} .filter-chip`);
+            buttons.forEach(btn => {
+                const onClickAttr = btn.getAttribute('onclick');
+                if (onClickAttr.includes(`'${value}'`)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function renderList() {
             const listContainer = document.getElementById('stationList');
             listContainer.innerHTML = '';
             
-            list.forEach(station => {
+            // Çift filtreleme mantığı (Kapsam AND Tarz)
+            const filtered = stations.filter(station => {
+                const matchGeo = (activeGeo === 'all' || station.type === activeGeo);
+                const matchGenre = (activeGenre === 'all' || station.genre === activeGenre);
+                return matchGeo && matchGenre;
+            });
+
+            if(filtered.length === 0) {
+                listContainer.innerHTML = `<div style="text-align:center;color:var(--text-muted);margin-top:20px;font-size:14px;">Aranan kriterde radyo bulunamadı.</div>`;
+                return;
+            }
+
+            filtered.forEach(station => {
                 const item = document.createElement('div');
                 item.className = `station-item ${currentStation?.id === station.id ? 'active' : ''}`;
                 item.onclick = () => selectStation(station);
+
+                const typeText = station.type === 'local' ? 'Yerel' : (station.type === 'web' ? 'İnternet' : 'Ulusal');
 
                 item.innerHTML = `
                     <div class="station-logo">${station.short}</div>
                     <div class="station-info">
                         <div class="station-name">${station.name}</div>
-                        <div class="station-freq">${station.freq} MHz</div>
+                        <div class="station-genre">${station.genre}</div>
                     </div>
-                    <div class="station-tag">${station.type === 'local' ? 'Yerel' : 'Ulusal'}</div>
+                    <div class="station-tags-box">
+                        <span class="station-tag" style="background:#0055ff33; color:#00ffcc;">${station.freq}</span>
+                        <span class="station-tag">${typeText}</span>
+                    </div>
                 `;
                 listContainer.appendChild(item);
             });
         }
 
-        // Filtreleme Fonksiyonu
-        function filterStations(type) {
-            // Buton aktiflik değişimi
-            document.querySelectorAll('.filter-chip').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-
-            if(type === 'all') {
-                renderList(stations);
-            } else {
-                const filtered = stations.filter(s => s.type === type);
-                renderList(filtered);
-            }
-        }
-
-        // İstasyon Seçimi
         function selectStation(station) {
             currentStation = station;
+            statusMsg.innerText = "Bağlanıyor...";
+            statusMsg.style.color = "#00ffcc";
             
-            // Arayüz güncelleme
             document.getElementById('playerTitle').innerText = station.name;
-            document.getElementById('playerCategory').innerText = station.cat;
-            document.getElementById('playerFreq').innerText = station.freq + " MHz";
+            document.getElementById('playerCategory').innerText = station.genre + " / " + (station.type === 'local' ? 'Yerel Yayın' : 'Ulusal Yayın');
+            document.getElementById('playerFreq').innerText = station.freq + (station.freq === "Web" ? "" : " MHz");
             document.getElementById('playerLogo').innerText = station.short;
 
-            // Aktif listeyi yenile (Seçilen rengi için)
-            const activeType = document.querySelector('.filter-chip.active').textContent;
-            if(activeType === "Tümü") renderList(stations);
-            else if(activeType === "Ulusal") renderList(stations.filter(s => s.type === 'national'));
-            else renderList(stations.filter(s => s.type === 'local'));
+            renderList();
 
-            // Audio kaynağını değiştir ve çal
+            // Sesi hazırla ve oynat
             audioPlayer.src = station.url;
+            audioPlayer.load();
             startPlayback();
         }
 
-        // Oynat / Durdur Yönetimi
         function togglePlay() {
-            if(!currentStation) return;
-            if (isPlaying) {
-                stopPlayback();
-            } else {
-                startPlayback();
+            if(!currentStation) {
+                statusMsg.innerText = "Lütfen önce bir istasyon seçin!";
+                return;
             }
+            if (isPlaying) { stopPlayback(); } else { startPlayback(); }
         }
 
         function startPlayback() {
             audioPlayer.play().then(() => {
                 isPlaying = true;
-                playerView.classList.add('playing');
+                statusMsg.innerText = "Canlı Yayın Yürütülüyor";
+                statusMsg.style.color = "#00ffcc";
                 playIcon.style.display = 'none';
                 pauseIcon.style.display = 'block';
                 neonRing.style.animationPlayState = 'running';
                 startVisualizerAnimation();
             }).catch(err => {
-                console.log("Radyo yüklenemedi veya URL aktif değil:", err);
-                // Not: Bazı radyolar tarayıcı güvenlik politikalarından (CORS/Mixed Content) dolayı doğrudan html'de çalmayabilir.
-                // Simülasyonun çalışmaya devam etmesi için animasyonu yine de başlatıyoruz:
-                isPlaying = true;
-                playerView.classList.add('playing');
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-                neonRing.style.animationPlayState = 'running';
-                startVisualizerAnimation();
+                isPlaying = false;
+                statusMsg.innerText = "Yayın şu an aktif değil veya desteklenmiyor.";
+                statusMsg.style.color = "#ff4a4a";
+                stopPlayback();
             });
         }
 
         function stopPlayback() {
             audioPlayer.pause();
             isPlaying = false;
-            playerView.classList.remove('playing');
+            if(currentStation) statusMsg.innerText = "Yayın Durduruldu";
             playIcon.style.display = 'block';
             pauseIcon.style.display = 'none';
             neonRing.style.animationPlayState = 'paused';
             stopVisualizerAnimation();
         }
 
-        // JavaScript Destekli Ses Dalgaları (Visualizer) Animasyonu
+        // Akıcı Ekran Ekolayzer Animasyonu
         function startVisualizerAnimation() {
             if(waveInterval) clearInterval(waveInterval);
             const bars = document.querySelectorAll('.wave-bar');
             
             waveInterval = setInterval(() => {
                 bars.forEach(bar => {
-                    // Müzik ritmine göre rastgele dinamik yükseklik atama
-                    const randomHeight = Math.floor(Math.random() * 45) + 5;
+                    const randomHeight = Math.floor(Math.random() * 54) + 6;
                     bar.style.height = `${randomHeight}px`;
                 });
-            }, 100);
+            }, 80);
         }
 
         function stopVisualizerAnimation() {
             clearInterval(waveInterval);
             const bars = document.querySelectorAll('.wave-bar');
             bars.forEach(bar => {
-                bar.style.height = '8px'; // Başlangıç durumuna geri dön
+                bar.style.height = '6px';
             });
         }
     </script>
