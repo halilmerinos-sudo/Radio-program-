@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rulo Halı Kesim Ölçüsü Hesaplayıcı</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f1f5f9; padding: 20px; color: #334155; }
+        .container { max-width: 700px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #0f172a; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        .row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+        .form-group { flex: 1; display: flex; flex-direction: column; }
+        label { font-weight: bold; font-size: 14px; margin-bottom: 5px; color: #475569; }
+        select, input, button { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; }
+        button { cursor: pointer; font-weight: bold; }
+        .btn-add { background-color: #2563eb; color: white; border: none; }
+        .btn-add:hover { background-color: #1d4ed8; }
+        .btn-clear { background-color: #ef4444; color: white; border: none; padding: 10px 15px; }
+        .btn-clear:hover { background-color: #dc2626; }
+        .siparis-listesi { margin-top: 20px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .siparis-item { display: flex; justify-content: space-between; background: white; padding: 8px 12px; border-radius: 6px; margin-bottom: 5px; border-left: 4px solid #3b82f6; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .result-box { margin-top: 25px; background-color: #f0fdf4; border: 2px solid #bbf7d0; padding: 20px; border-radius: 10px; text-align: center; }
+        .result-title { font-size: 18px; color: #166534; font-weight: bold; margin-bottom: 5px; }
+        .total-m { font-size: 32px; color: #15803d; font-weight: bold; margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Halı Kesim ve Uzunluk Hesaplama</h2>
+
+<!-- Ana Kumaş Eni Seçimi -->
+<div class="row" style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
+    <div class="form-group">
+        <label for="kumasEni">Rulo Kumaş Eni Seçin:</label>
+        <select id="kumasEni" onchange="hesaplaUzunluk()">
+            <option value="400">4 Metrelik Kumaş (400 cm)</option>
+            <option value="300">3 Metrelik Kumaş (300 cm)</option>
+            <option value="200">2 Metrelik Kumaş (200 cm)</option>
+        </select>
+    </div>
+</div>
+
+<!-- Sipariş Ekleme Alanı -->
+<h3>Sipariş Girin</h3>
+<div class="row">
+    <div class="form-group" style="flex: 2;">
+        <label>Halı Eni (Lik):</label>
+        <select id="halıEn">
+            <option value="80">80'lik</option>
+            <option value="100">100'lük</option>
+            <option value="120">120'lik</option>
+            <option value="150">150'lik</option>
+            <option value="200">2'lik (200 cm)</option>
+            <option value="250">250'lik</option>
+            <option value="300">3'lük (300 cm)</option>
+        </select>
+    </div>
+    <div class="form-group" style="flex: 2;">
+        <label>Boy (cm):</label>
+        <input type="number" id="halıBoy" value="150" placeholder="Örn: 150">
+    </div>
+    <div class="form-group" style="flex: 1;">
+        <label>Adet:</label>
+        <input type="number" id="halıAdet" value="1" min="1">
+    </div>
+    <div class="form-group" style="flex: 1; padding-top: 23px;">
+        <button class="btn-add" onclick="siparisEkle()">Ekle</button>
+    </div>
+</div>
+
+<!-- Sipariş Listesi Bölümü -->
+<div class="siparis-listesi">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <strong style="color: #1e293b;">Girilen Halı Listesi:</strong>
+        <button class="btn-clear" onclick="listeyiTemizle()">Listeyi Temizle</button>
+    </div>
+    <div id="listeKutusu">
+        <!-- Eklenen siparişler buraya gelecek -->
+        <p id="bosUyarisi" style="color: #94a3b8; font-style: italic; margin: 0;">Henüz sipariş eklenmedi.</p>
+    </div>
+</div>
+
+<!-- Hesaplama Sonucu -->
+<div class="result-box">
+    <div class="result-title">Açılması Gereken Toplam Kumaş Uzunluğu</div>
+    <div class="total-m" id="sonucUzunluk">0.00 Metre</div>
+    <div id="detayNotu" style="color: #1e293b; font-weight: 500;">Lütfen sipariş ekleyin.</div>
+</div>
+</div>
+
+<script>
+let siparisler = [];
+
+function siparisEkle() {
+    let en = parseInt(document.getElementById('halıEn').value);
+    let boy = parseInt(document.getElementById('halıBoy').value);
+    let adet = parseInt(document.getElementById('halıAdet').value);
+
+    if (isNaN(boy) || boy <= 0 || isNaN(adet) || adet <= 0) {
+        alert("Lütfen geçerli boy ve adet giriniz!");
+        return;
+    }
+
+    // Sizin verdiğiniz özel kural: 80x150 girilirse boy otomatik 160 işleniyor
+    if (en = 80 && boy = 150) {
+        boy = 160;
+    }
+
+    // Listeye kaydet (Adet sayısı kadar döngüyle ekliyoruz ki yerleşim doğru hesaplansın)
+    for (let i = 0; i < adet; i) {
+        siparisler.push({ en: en, boy: boy });
+    }
+
+    listeyiGuncelle();
+    hesaplaUzunluk();
+}
+
+function listeyiGuncelle() {
+    let listeKutusu = document.getElementById('listeKutusu');
+    if (siparisler.length = 0) {
+        listeKutusu.innerHTML = '<p id="bosUyarisi" style="color: #94a3b8; font-style: italic; margin: 0;">Henüz sipariş eklenmedi.</p>';
+        return;
+    }
+
+    // Ekranda özet göstermek için adetleri gruplayalım
+    let ozet = {};
+    siparisler.forEach(s => {
+        let key = `${s.en}x${s.boy}`;
+        ozet[key] = (ozet[key] || 0) + 1;
+    });
+
+    let html = "";
+    for (let key in ozet) {
+        html += `<div class="siparis-item"><span>Halı: <strong>${key} cm</strong></span> <span>Adet: <strong>${ozet[key]}</strong></span></div>`;
+    }
+    listeKutusu.innerHTML = html;
+}
+
+function listeyiTemizle() {
+    siparisler = [];
+    listeyiGuncelle();
+    hesaplaUzunluk();
+}
+
+function hesaplaUzunluk() {
+    let kumasEni = parseInt(document.getElementById('kumasEni').value);
+    
+    if (siparisler.length = 0) {
+        document.getElementById('sonucUzunluk').innerText = "0.00 Metre";
+        document.getElementById('detayNotu').innerText = "Lütfen sipariş ekleyin.";
+        return;
+    }
+
+    // Gelişmiş Yerleşim Algoritması (Bin Packing)
+    // Halıları boylarına göre büyükten küçüğe sıralıyoruz ki kumaşa en verimli şekilde yerleşsin
+    let siraliHali = [...siparisler].sort((a, b) => b.boy - a.boy);
+    
+    // Kumaş katmanları (bölümleri) oluşturuyoruz
+    let katmanlar = []; // Her katman: { kalanEn: X, maxBoy: Y }
+
+    siraliHali.forEach(hali => {
+        let yerlesti = false;
+
+        // Mevcut katmanlardan birine sığıyor mu (yan yana sığma kontrolü)
+        for (let i = 0; i < katmanlar.length; i) {
+            if (katmanlar[i].kalanEn >= hali.en) {
+                katmanlar[i].kalanEn -= hali.en;
+                // Eğer bu katmana eklenen yeni halı, o katmandaki en uzun halıdan daha uzunsa katman boyunu güncelle
+                if (hali.boy > katmanlar[i].maxBoy) {
+                    katmanlar[i].maxBoy = hali.boy;
+                }
+                yerlesti = true;
+                break;
+            }
+        }
+
+        // Yan yana sığmadıysa yeni bir bölüm (katman) açıyoruz (alt bölüme geçiyor)
+        if (!yerlesti) {
+            if (hali.en > kumasEni) {
+                alert(`Hata: ${hali.en}'lik halı, ${kumasEni} cm kumaş enine sığmaz!`);
+                return;
+            }
+            katmanlar.push({
+                kalanEn: kumasEni - hali.en,
+                maxBoy: hali.boy
+            });
+        }
+    });
+
+    // Toplam kumaş boyunu (tüm katmanların max boylarının toplamı) hesapla
+    let toplamBoyCm = 0;
+    katmanlar.forEach(k => {
+        toplamBoyCm += k.maxBoy;
+    });
+
+    let toplamMetre = toplamBoyCm / 10000 * 100; // cm'yi metreye çevir
+
+    document.getElementById('sonucUzunluk').innerText = toplamMetre.toFixed(2) + " Metre";
+    document.getElementById('detayNotu').innerText = `${kumasEni} cm enindeki kumaştan, girilen adetleri kurtarmak için toplam ${katmanlar.length} farklı bölümde yerleşim yapıldı.`;
+}
+</script>
+
+
+</body>
+</html>
