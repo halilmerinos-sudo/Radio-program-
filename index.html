@@ -1,559 +1,385 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Modern Android Tablet Radyosu Pro</title>
-    <style>
-        :root {
-            --bg-main: #0a0a0c;
-            --bg-panel: #141419;
-            --neon-color: #00ffcc;
-            --neon-glow: rgba(0, 255, 204, 0.4);
-            --text-main: #ffffff;
-            --text-muted: #7e7e8a;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pikap — Sanatçı Arşivi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            display: flex;
-        }
-
-        .tablet-container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* SOL PANEL */
-        .sidebar {
-            width: 38%;
-            background-color: var(--bg-panel);
-            border-right: 1px solid #22222b;
-            display: flex;
-            flex-direction: column;
-            padding: 16px;
-            height: 100%;
-        }
-
-        .sidebar h2 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        .filter-section {
-            margin-bottom: 10px;
-        }
-        
-        .filter-title {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 4px;
-            font-weight: 600;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .filter-chip {
-            background: #22222b;
-            border: none;
-            color: #b5b5be;
-            padding: 5px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 12px;
-            transition: all 0.2s ease;
-        }
-
-        .filter-chip.active, .filter-chip:hover {
-            background: var(--neon-color);
-            color: #000;
-            box-shadow: 0 0 8px var(--neon-glow);
-        }
-
-        .station-list {
-            flex: 1;
-            overflow-y: auto;
-            padding-right: 2px;
-            margin-top: 8px;
-        }
-
-        .station-list::-webkit-scrollbar {
-            width: 4px;
-        }
-        .station-list::-webkit-scrollbar-thumb {
-            background: #2b2b36;
-            border-radius: 4px;
-        }
-
-        .station-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 14px;
-            background: #1a1a22;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
-
-        .station-item:hover, .station-item.active {
-            border-color: var(--neon-color);
-            background: rgba(0, 255, 204, 0.06);
-        }
-
-        .station-logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #2b2b36;
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 13px;
-            color: var(--neon-color);
-            border: 1px solid #3d3d4e;
-            flex-shrink: 0;
-        }
-
-        .station-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .station-name {
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .station-genre {
-            color: var(--text-muted);
-            font-size: 11px;
-        }
-
-        .station-tags-box {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 2px;
-        }
-
-        .station-tag {
-            font-size: 9px;
-            padding: 1px 5px;
-            border-radius: 4px;
-            background: #2b2b36;
-            color: #bbb;
-            font-weight: 600;
-        }
-
-        /* SAĞ PANEL - TABLET EKRANINA TAM SIĞACAK DÜZEN */
-        .player-view {
-            width: 62%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 24px 20px;
-            position: relative;
-            height: 100%;
-        }
-
-        .player-top-info {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
-
-        .visualizer-container {
-            position: relative;
-            width: 180px;
-            height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
-
-        .neon-ring {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: var(--neon-color);
-            border-bottom-color: var(--neon-color);
-            animation: spin 3s linear infinite;
-            box-shadow: 0 0 15px var(--neon-glow);
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .player-logo {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: #141419;
-            border: 2px solid #222;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--neon-color);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
-            z-index: 2;
-            text-align: center;
-        }
-
-        .track-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 2px;
-            text-align: center;
-        }
-
-        .track-category {
-            color: var(--text-muted);
-            font-size: 13px;
-            margin-bottom: 4px;
-        }
-
-        .digital-freq {
-            font-size: 32px;
-            font-weight: 300;
-            color: var(--neon-color);
-            text-shadow: 0 0 8px var(--neon-glow);
-        }
-
-        .wave-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            height: 40px;
-            width: 100%;
-            margin: 10px 0;
-        }
-
-        .wave-bar {
-            width: 5px;
-            height: 5px;
-            background: linear-gradient(to top, #0055ff, var(--neon-color));
-            border-radius: 10px;
-            transition: height 0.08s ease;
-        }
-
-        .player-bottom-controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
-
-        .play-btn {
-            width: 68px;
-            height: 68px;
-            border-radius: 50%;
-            background-color: var(--neon-color);
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 15px var(--neon-glow);
-            transition: transform 0.1s ease;
-        }
-
-        .play-btn:active {
-            transform: scale(0.92);
-        }
-
-        .play-btn svg {
-            width: 30px;
-            height: 30px;
-            fill: #0a0a0c;
-        }
-        
-        .status-msg {
-            font-size: 12px;
-            color: #ff4a4a;
-            margin-top: 8px;
-            height: 16px;
-            font-weight: 500;
-        }
-    </style>
+  :root{
+    --bg:#14120f;
+    --surface:#1e1b17;
+    --surface-2:#262219;
+    --amber:#e8a33d;
+    --text:#f2ede4;
+    --muted:#8a8478;
+    --line:#332e26;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding-bottom:120px;
+  }
+  .wrap{
+    max-width:680px;
+    margin:0 auto;
+    padding:48px 20px 40px;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:8px;
+    font-weight:600;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:38px;
+    margin:0 0 28px;
+    letter-spacing:-0.01em;
+  }
+  .key-box{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-bottom:24px;
+    font-size:13px;
+    color:var(--muted);
+    display:none;
+  }
+  .key-box.show{display:block;}
+  .key-box a{color:var(--amber);}
+  .key-row{display:flex;gap:8px;margin-top:10px;}
+  input[type="password"], input[type="text"]{
+    flex:1;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    border-radius:8px;
+    padding:11px 14px;
+    font-size:14px;
+    font-family:'Inter',sans-serif;
+    outline:none;
+  }
+  input:focus{border-color:var(--amber);}
+  .search-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  button{
+    background:var(--amber);
+    color:#1a1509;
+    border:none;
+    border-radius:8px;
+    padding:11px 20px;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+    white-space:nowrap;
+  }
+  button:hover{filter:brightness(1.08);}
+  button.ghost{
+    background:transparent;
+    color:var(--muted);
+    border:1px solid var(--line);
+    font-weight:500;
+  }
+  .status{
+    font-size:13px;
+    color:var(--muted);
+    margin:14px 2px 0;
+    min-height:18px;
+  }
+  .tracklist{
+    margin-top:28px;
+    border-top:1px solid var(--line);
+  }
+  .track{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 4px;
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    transition:background .15s;
+  }
+  .track:hover{background:var(--surface);}
+  .track.active{background:var(--surface-2);}
+  .track-num{
+    font-family:'Fraunces',serif;
+    color:var(--muted);
+    font-size:15px;
+    width:22px;
+    flex-shrink:0;
+  }
+  .track img{
+    width:52px;height:52px;
+    border-radius:6px;
+    object-fit:cover;
+    flex-shrink:0;
+  }
+  .track-info{overflow:hidden;}
+  .track-title{
+    font-size:14.5px;
+    font-weight:500;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .track-channel{
+    font-size:12.5px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+  .player-dock{
+    position:fixed;
+    bottom:0;left:0;right:0;
+    background:var(--surface);
+    border-top:1px solid var(--line);
+    padding:14px 20px;
+    display:none;
+    align-items:center;
+    gap:16px;
+    z-index:10;
+  }
+  .player-dock.show{display:flex;}
+  .vinyl{
+    width:44px;height:44px;
+    border-radius:50%;
+    background:radial-gradient(circle at center, #0d0b08 0 6px, #2a2620 6px 8px, #0d0b08 8px 100%);
+    flex-shrink:0;
+    animation:spin 3s linear infinite;
+    animation-play-state:paused;
+    border:1px solid var(--line);
+  }
+  .vinyl.playing{animation-play-state:running;}
+  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  .now-playing{flex:1;overflow:hidden;}
+  .now-playing .nl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);}
+  .now-playing .nt{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  
+  /* YouTube Player Gizleme Alanı */
+  .player-container {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    left: -9999px;
+  }
+  .empty{
+    color:var(--muted);
+    font-size:14px;
+    padding:24px 4px;
+    font-style:italic;
+  }
+</style>
 </head>
 <body>
 
-    <audio id="radio-player" preload="none" crossorigin="anonymous"></audio>
+<div class="wrap">
+  <div class="eyebrow">Pikap</div>
+  <h1>Sanatçı Arşivi</h1>
 
-    <div class="tablet-container">
-        
-        <!-- SOL FİLTRE VE LİSTE PANELİ -->
-        <div class="sidebar">
-            <h2>Radyo İstasyonları</h2>
-            
-            <div class="filter-section">
-                <div class="filter-title">Yayın Türü</div>
-                <div class="filter-group" id="geoFilters">
-                    <button class="filter-chip active" onclick="filterType('geo', 'all')">Tümü</button>
-                    <button class="filter-chip" onclick="filterType('geo', 'national')">Ulusal</button>
-                    <button class="filter-chip" onclick="filterType('geo', 'local')">Yerel</button>
-                </div>
-            </div>
-
-            <div class="filter-section">
-                <div class="filter-title">Müzik Tarzı</div>
-                <div class="filter-group" id="genreFilters">
-                    <button class="filter-chip active" onclick="filterType('genre', 'all')">Tümü</button>
-                    <button class="filter-chip" onclick="filterType('genre', 'Arabesk')">Arabesk</button>
-                    <button class="filter-chip" onclick="filterType('genre', 'Pop')">Pop</button>
-                    <button class="filter-chip" onclick="filterType('genre', 'Nostalji')">Nostalji</button>
-                    <button class="filter-chip" onclick="filterType('genre', 'Yabancı')">Yabancı</button>
-                </div>
-            </div>
-
-            <div class="station-list" id="stationList"></div>
-        </div>
-
-        <!-- SAĞ EKRAN PLAYER PANELİ -->
-        <div class="player-view" id="playerView">
-            <div class="player-top-info">
-                <div class="visualizer-container">
-                    <div class="neon-ring" id="neonRing"></div>
-                    <div class="player-logo" id="playerLogo">📻</div>
-                </div>
-
-                <div class="track-title" id="playerTitle">Kanal Seçin</div>
-                <div class="track-category" id="playerCategory">Müzik Tarzı</div>
-                <div class="digital-freq" id="playerFreq">00.0 MHz</div>
-            </div>
-
-            <!-- Ortadaki Dinamik Dalga Efekti -->
-            <div class="wave-container" id="waveContainer">
-                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-            </div>
-
-            <div class="player-bottom-controls">
-                <button class="play-btn" id="playBtn" onclick="togglePlay()">
-                    <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                    <svg id="pauseIcon" style="display:none;" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                </button>
-                <div class="status-msg" id="statusMsg"></div>
-            </div>
-        </div>
-
+  <div class="key-box" id="keyBox">
+    Arama yapabilmek için ücretsiz bir <strong>YouTube Data API v3</strong> anahtarı gerekiyor
+    (<a href="https://console.cloud.google.com/apis/library/youtube.googleapis.com" target="_blank">Google Cloud Console</a>'dan alınır).
+    <div class="key-row">
+      <input type="password" id="apiKeyInput" placeholder="API anahtarını buraya yapıştır">
+      <button onclick="saveKey()">Kaydet</button>
     </div>
+  </div>
 
-    <script>
-        // Tarayıcı güvenliğine uygun, HTTPS altyapılı gerçek popüler radyo havuzu
-        const stations = [
-            // ARABESK & HALK
-            { id: 1, name: "Kral FM", freq: "105.4", type: "national", genre: "Arabesk", url: "https://radyo.kralfm.com.tr/stream/1/", short: "KRAL" },
-            { id: 2, name: "Kral Akustik", freq: "Web", type: "national", genre: "Arabesk", url: "https://radyo.kralakustik.com.tr/stream/1/", short: "AKST" },
-            { id: 3, name: "TRT Türkü", freq: "97.0", type: "local", genre: "Arabesk", url: "https://file.trtvod.com/stream/radyo/trtturku.ts", short: "TRTT" },
-            
-            // POP
-            { id: 4, name: "Kral Pop", freq: "94.7", type: "national", genre: "Pop", url: "https://radyo.kralpop.com.tr/stream/1/", short: "KPOP" },
-            { id: 5, name: "Kral Rap", freq: "Web", type: "national", genre: "Pop", url: "https://radyo.kralrap.com.tr/stream/1/", short: "RAP" },
-            { id: 6, name: "Kral 90'lar Pop", freq: "Web", type: "national", genre: "Pop", url: "https://radyo.kral90lar.com.tr/stream/1/", short: "90LAR" },
+  <div class="search-row">
+    <input type="text" id="artistInput" placeholder="Sanatçı adı yaz…" onkeydown="if(event.key==='Enter')search()">
+    <button onclick="search()">Ara</button>
+    <button class="ghost" onclick="changeKey()">Anahtar</button>
+  </div>
+  <div class="status" id="status"></div>
 
-            // NOSTALJİ & KLASİK
-            { id: 7, name: "TRT FM", freq: "91.4", type: "national", genre: "Nostalji", url: "https://file.trtvod.com/stream/radyo/trtfm.ts", short: "TRTF" },
-            { id: 8, name: "TRT Radyo 1", freq: "95.6", type: "national", genre: "Nostalji", url: "https://file.trtvod.com/stream/radyo/trtradyo1.ts", short: "TRT1" },
-            { id: 9, name: "TRT Nağme", freq: "101.6", type: "local", genre: "Nostalji", url: "https://file.trtvod.com/stream/radyo/trtname.ts", short: "NĞME" },
-            
-            // YABANCI & CAZ & KLASİK
-            { id: 10, name: "TRT Radyo 3 (Caz/Batı)", freq: "94.5", type: "national", genre: "Yabancı", url: "https://file.trtvod.com/stream/radyo/trtradyo3.ts", short: "TRT3" },
-            { id: 11, name: "Kral World", freq: "Web", type: "national", genre: "Yabancı", url: "https://radyo.kralworld.com.tr/stream/1/", short: "WRLD" },
-            { id: 12, name: "TRT Uluslararası", freq: "Web", type: "local", genre: "Yabancı", url: "https://file.trtvod.com/stream/radyo/trtvotworld.ts", short: "VOT" }
-        ];
+  <div class="tracklist" id="results"></div>
+</div>
 
-        let currentStation = null;
-        let isPlaying = false;
-        let waveInterval = null;
-        
-        let activeGeo = 'all';
-        let activeGenre = 'all';
+<div class="player-dock" id="dock">
+  <div class="vinyl" id="vinyl"></div>
+  <div class="now-playing">
+    <div class="nl">Çalıyor</div>
+    <div class="nt" id="nowTitle">—</div>
+  </div>
+  <button class="ghost" onclick="togglePlay()" id="playBtn">Duraklat</button>
+</div>
 
-        const audioPlayer = document.getElementById('radio-player');
-        const playIcon = document.getElementById('playIcon');
-        const pauseIcon = document.getElementById('pauseIcon');
-        const neonRing = document.getElementById('neonRing');
-        const statusMsg = document.getElementById('statusMsg');
+<div class="player-container">
+  <div id="player"></div>
+</div>
 
-        window.onload = () => {
-            renderList();
-            neonRing.style.animationPlayState = 'paused';
-        };
+<script>
+let apiKey = localStorage.getItem('yt_api_key') || '';
+let ytPlayer = null;
+let ytReady = false;
 
-        function filterType(filterCategory, value) {
-            if (filterCategory === 'geo') {
-                activeGeo = value;
-                updateChipActiveState('geoFilters', value);
-            } else if (filterCategory === 'genre') {
-                activeGenre = value;
-                updateChipActiveState('genreFilters', value);
-            }
-            renderList();
-        }
+// YouTube Iframe API'sini Yükle
+function loadYTApi(){
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.body.appendChild(tag);
+}
 
-        function updateChipActiveState(groupId, value) {
-            const buttons = document.querySelectorAll(`#${groupId} .filter-chip`);
-            buttons.forEach(btn => {
-                const onClickAttr = btn.getAttribute('onclick');
-                if (onClickAttr.includes(`'${value}'`)) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-        }
+window.onYouTubeIframeAPIReady = function(){
+  ytPlayer = new YT.Player('player', {
+    height: '200',
+    width: '200',
+    playerVars: {
+      'autoplay': 1,
+      'controls': 0
+    },
+    events: {
+      'onReady': () => { ytReady = true; },
+      'onStateChange': onPlayerState
+    }
+  });
+};
 
-        function renderList() {
-            const listContainer = document.getElementById('stationList');
-            listContainer.innerHTML = '';
-            
-            const filtered = stations.filter(station => {
-                const matchGeo = (activeGeo === 'all' || station.type === activeGeo);
-                const matchGenre = (activeGenre === 'all' || station.genre === activeGenre);
-                return matchGeo && matchGenre;
-            });
+loadYTApi();
 
-            if(filtered.length === 0) {
-                listContainer.innerHTML = `<div style="text-align:center;color:var(--text-muted);margin-top:20px;font-size:12px;">Kanal bulunamadı.</div>`;
-                return;
-            }
+function onPlayerState(e){
+  const vinyl = document.getElementById('vinyl');
+  const btn = document.getElementById('playBtn');
+  if(e.data === YT.PlayerState.PLAYING){
+    vinyl.classList.add('playing');
+    btn.textContent = 'Duraklat';
+  } else {
+    vinyl.classList.remove('playing');
+    btn.textContent = 'Devam Et';
+  }
+}
 
-            filtered.forEach(station => {
-                const item = document.createElement('div');
-                item.className = `station-item ${currentStation?.id === station.id ? 'active' : ''}`;
-                item.onclick = () => selectStation(station);
+function checkKey(){
+  if(!apiKey){
+    document.getElementById('keyBox').classList.add('show');
+    return false;
+  }
+  return true;
+}
 
-                const typeText = station.type === 'local' ? 'Yerel' : 'Ulusal';
+// Sayfa yüklendiğinde anahtar kontrolü yap
+document.addEventListener('DOMContentLoaded', () => {
+  if (apiKey) {
+    document.getElementById('apiKeyInput').value = apiKey;
+  }
+  checkKey();
+});
 
-                item.innerHTML = `
-                    <div class="station-logo">${station.short}</div>
-                    <div class="station-info">
-                        <div class="station-name">${station.name}</div>
-                        <div class="station-genre">${station.genre}</div>
-                    </div>
-                    <div class="station-tags-box">
-                        <span class="station-tag" style="background:#0055ff33; color:#00ffcc;">${station.freq}</span>
-                        <span class="station-tag">${typeText}</span>
-                    </div>
-                `;
-                listContainer.appendChild(item);
-            });
-        }
+function saveKey(){
+  const v = document.getElementById('apiKeyInput').value.trim();
+  if(!v){ return; }
+  apiKey = v;
+  localStorage.setItem('yt_api_key', apiKey);
+  document.getElementById('keyBox').classList.remove('show');
+  document.getElementById('status').textContent = 'Anahtar kaydedildi! Sanatçı arayabilirsin.';
+}
 
-        function selectStation(station) {
-            currentStation = station;
-            statusMsg.innerText = "Yükleniyor...";
-            statusMsg.style.color = "#00ffcc";
-            
-            document.getElementById('playerTitle').innerText = station.name;
-            document.getElementById('playerCategory').innerText = station.genre + " / " + (station.type === 'local' ? 'Yerel Yayın' : 'Ulusal Yayın');
-            document.getElementById('playerFreq').innerText = station.freq + (station.freq === "Web" ? "" : " MHz");
-            document.getElementById('playerLogo').innerText = station.short;
+function changeKey(){
+  document.getElementById('keyBox').classList.toggle('show');
+}
 
-            renderList();
+async function search(){
+  const status = document.getElementById('status');
+  const resultsEl = document.getElementById('results');
+  const artist = document.getElementById('artistInput').value.trim();
 
-            audioPlayer.src = station.url;
-            audioPlayer.load();
-            startPlayback();
-        }
+  if(!checkKey()){
+    status.textContent = 'Önce API anahtarını kaydetmeniz gereklidir.';
+    return;
+  }
+  if(!artist){
+    status.textContent = 'Lütfen bir sanatçı ismi yazın.';
+    return;
+  }
 
-        function togglePlay() {
-            if(!currentStation) {
-                statusMsg.innerText = "Önce bir kanal seçin!";
-                return;
-            }
-            if (isPlaying) { stopPlayback(); } else { startPlayback(); }
-        }
+  status.textContent = 'Aranıyor…';
+  resultsEl.innerHTML = '';
 
-        function startPlayback() {
-            audioPlayer.play().then(() => {
-                isPlaying = true;
-                statusMsg.innerText = "Canlı Yayın Yürütülüyor";
-                statusMsg.style.color = "#00ffcc";
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-                neonRing.style.animationPlayState = 'running';
-                startVisualizerAnimation();
-            }).catch(err => {
-                isPlaying = false;
-                statusMsg.innerText = "Bağlantı hatası. Tekrar deneyin.";
-                statusMsg.style.color = "#ff4a4a";
-                stopPlayback();
-            });
-        }
+  try{
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoCategoryId=10&maxResults=20&q=${encodeURIComponent(artist)}&key=${apiKey}`;
+    const res = await fetch(url);
+    const data = await res.json();
 
-        function stopPlayback() {
-            audioPlayer.pause();
-            isPlaying = false;
-            if(currentStation) statusMsg.innerText = "Yayın Durduruldu";
-            playIcon.style.display = 'block';
-            pauseIcon.style.display = 'none';
-            neonRing.style.animationPlayState = 'paused';
-            stopVisualizerAnimation();
-        }
+    if(data.error){
+      status.textContent = 'API Hatası: ' + data.error.message;
+      return;
+    }
+    if(!data.items || data.items.length === 0){
+      resultsEl.innerHTML = '<div class="empty">Sonuç bulunamadı. Başka bir isim deneyin.</div>';
+      status.textContent = '';
+      return;
+    }
 
-        function startVisualizerAnimation() {
-            if(waveInterval) clearInterval(waveInterval);
-            const bars = document.querySelectorAll('.wave-bar');
-            
-            waveInterval = setInterval(() => {
-                bars.forEach(bar => {
-                    const randomHeight = Math.floor(Math.random() * 34) + 6;
-                    bar.style.height = `${randomHeight}px`;
-                });
-            }, 80);
-        }
+    status.textContent = `${data.items.length} şarkı bulundu — dinlemek için birine tıklayın.`;
 
-        function stopVisualizerAnimation() {
-            clearInterval(waveInterval);
-            const bars = document.querySelectorAll('.wave-bar');
-            bars.forEach(bar => {
-                bar.style.height = '5px';
-            });
-        }
-    </script>
+    data.items.forEach((item, idx) => {
+      const div = document.createElement('div');
+      div.className = 'track';
+      div.onclick = () => playTrack(item.id.videoId, item.snippet.title, div);
+      
+      div.innerHTML = `
+        <div class="track-num">${String(idx+1).padStart(2,'0')}</div>
+        <img src="${item.snippet.thumbnails.default.url}" alt="">
+        <div class="track-info">
+          <div class="track-title">${escapeHtml(item.snippet.title)}</div>
+          <div class="track-channel">${escapeHtml(item.snippet.channelTitle)}</div>
+        </div>
+      `;
+      resultsEl.appendChild(div);
+    });
+
+  } catch(err){
+    status.textContent = 'Arama yapılırken hata oluştu: ' + err.message;
+  }
+}
+
+function escapeHtml(str){
+  return str.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+}
+
+function playTrack(videoId, title, el){
+  document.querySelectorAll('.track').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+
+  document.getElementById('dock').classList.add('show');
+  document.getElementById('nowTitle').innerHTML = title;
+
+  if(ytReady && ytPlayer && typeof ytPlayer.loadVideoById === 'function'){
+    ytPlayer.loadVideoById(videoId);
+  } else {
+    setTimeout(() => playTrack(videoId, title, el), 300);
+  }
+}
+
+function togglePlay(){
+  if(!ytPlayer || typeof ytPlayer.getPlayerState !== 'function') return;
+  
+  const state = ytPlayer.getPlayerState();
+  if(state === YT.PlayerState.PLAYING){
+    ytPlayer.pauseVideo();
+  } else {
+    ytPlayer.playVideo();
+  }
+}
+</script>
+
 </body>
 </html>
